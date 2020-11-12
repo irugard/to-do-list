@@ -7,7 +7,21 @@ function App() {
 
   const [formInput, setFormInput] = useState("");
   const [todos, setTodos] = useState([]);
+  const [filteredTodos, setFilteredTodos] = useState([]);
   const [counter, setCounter] = useState(0);
+  const [filter, setFilter] = useState('All');
+
+  useEffect(() => {
+    setFilteredTodos(todos.filter(el => {
+      if (filter === 'Pending') {
+        return el.completed === false;
+      } if (filter === 'Completed') {
+        return el.completed === true;
+      } if (filter === 'All') {
+        return el.text !== null;
+      }
+    }))
+  }, [filter, todos])
 
   const handleFormInputChange = e => {
     setFormInput(e.target.value);
@@ -15,26 +29,32 @@ function App() {
 
   const handleSubmitForm = e => {
     e.preventDefault();
-    if(formInput.trim() !== ""){
+    if (formInput.trim() !== "") {
       setTodos([...todos, { text: formInput, completed: false, id: counter }]);
       setFormInput("");
       setCounter(prev => prev + 1);
     }
-    
+
+  }
+
+  const handleFilter = e => {
+    setFilter(e.target.value)
   }
 
   const handleDeleteTodoItem = e => {
     //tried doing dummyArray = todos but that sets the memory address to the same, and that cant be changed since its a state variable and thats why it wasnt working before
     //also used splice but because the id of the items doesnt update like splice does, it will cause it to break, must use delete so it leaves the items in their original index even with deletions
-    let dummyArray = todos.slice();
-    delete dummyArray[e.target.id];
-    setTodos(dummyArray);
-
+    //but then when you deleted all entry, the actual todos state has bunch of undefined, the code breaks, have to use different method: filter should work
+    setTodos(todos.filter((el) => JSON.stringify(el.id) !== e.target.id))
   }
 
   const handleChecked = e => {
-    todos[e.target.id].completed = !todos[e.target.id].completed;
-    console.log(todos[e.target.id]);
+    setTodos(todos.map((item) => {
+      if (JSON.stringify(item.id) === e.target.id) {
+        return { ...item, completed: !item.completed }
+      }
+      return item;
+    }))
   }
 
   return (
@@ -42,24 +62,25 @@ function App() {
       <Form
         handleFormInputChange={handleFormInputChange}
         handleSubmitForm={handleSubmitForm}
-        value={formInput}
+        inputValue={formInput}
+        filter={filter}
+        handleFilter={handleFilter}
       />
       <ul className='todo-list'>
-      {todos.map(item => {
-        return (
-        <li className='todo-list-items'>
-          <Task 
-            key={item.id}
-            value={item.text}
-            handleDeleteTodoItem={handleDeleteTodoItem}
-            checked={false}
-            handleChecked={handleChecked}
-            id={item.id}
-            />
-          </li>)
-      })}
+        {filteredTodos.map(item => {
+          return (
+            <li className='todo-list-items'>
+              <Task
+                key={item.id}
+                value={item.text}
+                handleDeleteTodoItem={handleDeleteTodoItem}
+                handleChecked={handleChecked}
+                id={item.id}
+              />
+            </li>)
+        })}
       </ul>
-      
+
     </>
   );
 }

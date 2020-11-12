@@ -2,17 +2,18 @@ body{
   background-color: burlywood;
 }
 
-.App {
-  text-align: center;
+Form{
+  padding-top: 10em;
 }
 
 .todo-list{
   list-style-type: none;
   text-align: center;
+  padding-top: 2.5em;
 }
 
 .todo-list-items{
-
+  margin-bottom: 1em;
 }
 
 .task-text{
