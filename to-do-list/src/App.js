@@ -6,10 +6,10 @@ import Form from './components/Form';
 function App() {
 
   const [formInput, setFormInput] = useState("");
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(JSON.parse(localStorage.getItem('todos'))||[]);
   const [filteredTodos, setFilteredTodos] = useState([]);
   const [counter, setCounter] = useState(0);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState(JSON.parse(localStorage.getItem('filter'))|| 'All');
 
   useEffect(() => {
     setFilteredTodos(todos.filter(el => {
@@ -17,10 +17,11 @@ function App() {
         return el.completed === false;
       } if (filter === 'Completed') {
         return el.completed === true;
-      } if (filter === 'All') {
-        return el.text !== null;
-      }
+      } return el;
     }))
+
+    localStorage.setItem('todos', JSON.stringify(todos));
+    localStorage.setItem('filter', JSON.stringify(filter));
   }, [filter, todos])
 
   const handleFormInputChange = e => {
@@ -65,6 +66,7 @@ function App() {
         inputValue={formInput}
         filter={filter}
         handleFilter={handleFilter}
+        selected={filter}
       />
       <ul className='todo-list'>
         {filteredTodos.map(item => {
