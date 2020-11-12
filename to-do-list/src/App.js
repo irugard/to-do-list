@@ -76,6 +76,7 @@ function App() {
                 handleDeleteTodoItem={handleDeleteTodoItem}
                 handleChecked={handleChecked}
                 id={item.id}
+                checked = {item.completed}
               />
             </li>)
         })}
