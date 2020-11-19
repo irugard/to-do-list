@@ -6,10 +6,11 @@ import Form from './components/Form';
 function App() {
 
   const [formInput, setFormInput] = useState("");
-  const [todos, setTodos] = useState(JSON.parse(localStorage.getItem('todos'))||[]);
+  const [todos, setTodos] = useState(JSON.parse(localStorage.getItem('todos')) || []);
   const [filteredTodos, setFilteredTodos] = useState([]);
   const [counter, setCounter] = useState(0);
-  const [filter, setFilter] = useState(JSON.parse(localStorage.getItem('filter'))|| 'All');
+  const [filter, setFilter] = useState(JSON.parse(localStorage.getItem('filter')) || 'All');
+
 
   useEffect(() => {
     setFilteredTodos(todos.filter(el => {
@@ -24,14 +25,26 @@ function App() {
     localStorage.setItem('filter', JSON.stringify(filter));
   }, [filter, todos])
 
+
+
   const handleFormInputChange = e => {
     setFormInput(e.target.value);
   }
 
+  const updateHandler = (e, key, value) => {
+
+    setTodos(todos.map((item) => {
+      if (item.id.toString() === e.target.id) {
+        return { ...item, [key]: value }
+      }
+      return item;
+    }))
+
+  }
   const handleSubmitForm = e => {
     e.preventDefault();
     if (formInput.trim() !== "") {
-      setTodos([...todos, { text: formInput, completed: false, id: counter }]);
+      setTodos([...todos, { text: formInput, completed: false, id: counter, isEditable: false }]);
       setFormInput("");
       setCounter(prev => prev + 1);
     }
@@ -39,24 +52,25 @@ function App() {
   }
 
   const handleFilter = e => {
-    setFilter(e.target.value)
-  }
+    setFilter(e.target.value);
+  } 
 
   const handleDeleteTodoItem = e => {
-    //tried doing dummyArray = todos but that sets the memory address to the same, and that cant be changed since its a state variable and thats why it wasnt working before
-    //also used splice but because the id of the items doesnt update like splice does, it will cause it to break, must use delete so it leaves the items in their original index even with deletions
-    //but then when you deleted all entry, the actual todos state has bunch of undefined, the code breaks, have to use different method: filter should work
-    setTodos(todos.filter((el) => JSON.stringify(el.id) !== e.target.id))
+    setTodos(todos.filter((el) => el.id.toString() !== e.target.id));
   }
 
-  const handleChecked = e => {
-    setTodos(todos.map((item) => {
-      if (JSON.stringify(item.id) === e.target.id) {
-        return { ...item, completed: !item.completed }
-      }
-      return item;
-    }))
+  const handleChecked = (e, value) => {
+    updateHandler(e, 'completed', value);
   }
+
+  const handleEdit = (e, value) => {
+    updateHandler(e, 'isEditable', value)
+  }
+
+  const handleOnChange = (e) => {
+    updateHandler(e, 'text', e.target.value);
+  }
+
 
   return (
     <>
@@ -76,9 +90,12 @@ function App() {
                 key={item.id}
                 value={item.text}
                 handleDeleteTodoItem={handleDeleteTodoItem}
-                handleChecked={handleChecked}
+                handleChecked={(e) => handleChecked(e,!item.completed)}
+                handleOnChange = {handleOnChange}
                 id={item.id}
-                checked = {item.completed}
+                isEditable = {item.isEditable}
+                handleEdit = {(e) => handleEdit(e, !item.isEditable)}
+                checked={item.completed}
               />
             </li>)
         })}
