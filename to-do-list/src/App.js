@@ -8,7 +8,7 @@ function App() {
   const [formInput, setFormInput] = useState("");
   const [todos, setTodos] = useState(JSON.parse(localStorage.getItem('todos')) || []);
   const [filteredTodos, setFilteredTodos] = useState([]);
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(JSON.parse(localStorage.getItem('counter')) || 0);
   const [filter, setFilter] = useState(JSON.parse(localStorage.getItem('filter')) || 'All');
 
 
@@ -23,7 +23,8 @@ function App() {
 
     localStorage.setItem('todos', JSON.stringify(todos));
     localStorage.setItem('filter', JSON.stringify(filter));
-  }, [filter, todos])
+    localStorage.setItem('counter', JSON.stringify(counter))
+  }, [filter, todos, counter])
 
 
 
