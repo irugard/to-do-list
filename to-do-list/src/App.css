@@ -102,6 +102,63 @@ Form{
   border: none;
 }
 
-.checkbox{
-  
+.checkbox-container {
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  margin-right: 0.25em;
+}
+
+.checkbox-container input{
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.custom-checkbox {
+  position: relative;
+  top: 0.2em;
+  height: 1.25em;
+  width: 1.25em;
+  background-color: black;
+  border-radius: 0.3em;
+  border: 0.02em solid #ab8d3f;
+}
+
+/* On mouse-over, add a grey background color */
+.checkbox-container:hover input ~ .custom-checkbox {
+  border: 0.1em solid #ab8d3f;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkbox-container input:checked ~ .custom-checkbox {
+  background-color: black;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.custom-checkbox:after {
+  content: "";
+  position: relative;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-container input:checked ~ .custom-checkbox:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkbox-container .custom-checkbox:after {
+  left: 0.3750em;
+  top: 0.125em;
+  width: 5px;
+  height: 10px;
+  border: solid #ab8d3f;
+  border-width: 0 0.2em 0.2em 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
