@@ -1,9 +1,9 @@
-import './App.css';
+import './ToDoList.css';
 import React, { useState, useEffect } from 'react';
 import Task from './components/Task';
 import Form from './components/Form';
 
-function App() {
+function ToDoList() {
 
   const [formInput, setFormInput] = useState("");
   const [todos, setTodos] = useState(JSON.parse(localStorage.getItem('todos')) || []);
@@ -106,4 +106,4 @@ function App() {
   );
 }
 
-export default App;
+export default ToDoList;
